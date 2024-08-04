@@ -1,3 +1,4 @@
+"""
 import os
 import django
 from apscheduler.schedulers.blocking import BlockingScheduler
@@ -23,3 +24,5 @@ try:
     scheduler.start()
 except (KeyboardInterrupt, SystemExit):
     pass
+
+"""
