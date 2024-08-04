@@ -18,7 +18,7 @@ def start_cron():
 # Fonction pour démarrer le scheduler dans un thread
 def start_scheduler():
     scheduler = BlockingScheduler()
-    scheduler.add_job(start_cron, 'interval', minutes=1)
+    scheduler.add_job(start_cron, 'interval', days=1)
     scheduler.start()
 
 # Démarrer le scheduler dans un thread
