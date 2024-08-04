@@ -35,7 +35,6 @@ PyNaCl==1.5.0
 pytest==7.4.0
 python-dateutil==2.8.2
 python-gitlab==3.14.0
-python-ldap==3.4.4
 pytz==2023.3
 pytz-deprecation-shim==0.1.0.post0
 reportlab==3.6.12
