@@ -1,16 +1,12 @@
-import os
-from django.core.files.storage import FileSystemStorage
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework import status, serializers
+from rest_framework import status
 from django.db import transaction
-from django.core.exceptions import ObjectDoesNotExist
-from ..models import Documents, Exercises, Collaborations
-from ..serializers import DocumentsSerializer, ExercisesSerializer, DocumentsSerializerAdd, CollaborationsSerializer, CollaborationsSerializerAdd
-from ..permission_classes import PermissionVerify
-from .helpers import generateNumero
+from my_api.models import Documents, Collaborations
+from my_api.Utils.serializers import DocumentsSerializer, CollaborationsSerializer, CollaborationsSerializerAdd
+from my_api.Utils.permission_classes import PermissionVerify
 
 class Collaboration_view:
     @api_view(['POST'])

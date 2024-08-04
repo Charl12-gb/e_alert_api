@@ -1,8 +1,5 @@
-from rest_framework.authentication import get_authorization_header
-from rest_framework.exceptions import AuthenticationFailed, PermissionDenied
-from rest_framework.permissions import BasePermission
 from rest_framework_simplejwt.authentication import JWTAuthentication
-from .models import Permissions, User_permissions
+from my_api.models import User_permissions
 from rest_framework import exceptions
 
 def extract_user_id_from_token(request):

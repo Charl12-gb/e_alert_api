@@ -4,9 +4,9 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticated
 from django.db import transaction
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
-from ..models import Exercice_configurations, Documents
-from ..serializers import ExerciceConfigurationsSerializer
-from ..permission_classes import PermissionVerify
+from my_api.models import Exercice_configurations, Documents
+from my_api.Utils.serializers import ExerciceConfigurationsSerializer
+from my_api.Utils.permission_classes import PermissionVerify
 
 class Exercice_configuration_view:
     @api_view(['POST'])

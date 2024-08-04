@@ -1,18 +1,16 @@
-from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
-from ..models import Exercises, Documents, Users, Collaborations, Roles, Exercice_configurations
-from ..serializers import ExercisesSerializer, ExercisesSerializerAdd, DocumentsSerializer, UsersSerializer, CollaborationsSerializer, PartnerDocumentsSerializer
-from rest_framework.permissions import AllowAny
-from ..permission_classes import PermissionVerify
+from my_api.models import Exercises, Documents, Users, Collaborations, Exercice_configurations
+from my_api.Utils.serializers import ExercisesSerializer, ExercisesSerializerAdd, DocumentsSerializer, UsersSerializer, CollaborationsSerializer, PartnerDocumentsSerializer
+from my_api.Utils.permission_classes import PermissionVerify
 from django.db import transaction
-from .helpers import generateNumero
+from my_api.Utils.helpers import generateNumero
 from django.shortcuts import get_object_or_404
 from django.db.models import Count, Q
-from datetime import date, timedelta
+from datetime import date
 import datetime
 
 

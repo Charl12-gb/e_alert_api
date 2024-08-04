@@ -8,7 +8,7 @@ from rest_framework.generics import GenericAPIView
 from rest_framework.views import APIView
 from ldap3 import Server, Connection, SIMPLE, SUBTREE
 from rest_framework.decorators import api_view, permission_classes
-from .serializers import UsersSerializer
+from my_api.Utils.serializers import UsersSerializer
 from django.contrib.auth.hashers import make_password
 from jwt import encode
 from my_api.models import Users, Roles, Permission_roles, User_permissions

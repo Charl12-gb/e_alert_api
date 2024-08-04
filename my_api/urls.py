@@ -1,16 +1,16 @@
-from . import views
+from my_api import views
 from django.urls import path
-from .views import LoginView, LogoutView
+from my_api.views import LoginView, LogoutView
 from rest_framework_simplejwt.views import TokenRefreshView
-from .my_views.Exercice_views import Exercice_view
-from .my_views.Document_views import Document_view
-from .my_views.Exercice_configuration_views import Exercice_configuration_view
-from .my_views.Log_views import Log_view
-from .my_views.user_views import User_view
-from .my_views.configuration_views import Configuration_view
-from .my_views.Collaboration_views import Collaboration_view
-from .my_views.Contact_views import Contact_view
-from .my_views import Statistique
+from my_api.Views.Exercice.Exercice_views import Exercice_view
+from my_api.Views.Document.Document_views import Document_view
+from my_api.Views.Exercice.Exercice_configuration_views import Exercice_configuration_view
+from my_api.Views.Account.Log_views import Log_view
+from my_api.Views.Account.user_views import User_view
+from my_api.Views.Document.configuration_views import Configuration_view
+from my_api.Views.Account.Collaboration_views import Collaboration_view
+from my_api.Views.Account.Contact_views import Contact_view
+from my_api.Views.Account import Statistique
 
 urlpatterns = [
     path('', views.home),

@@ -11,6 +11,6 @@ from my_api.models import Exercice_configurations, Documents, Contacts
 
 # Votre fonction de démarrage du cron
 def start_cron():
-    from my_api.my_views.alert_config import getDocumentNotValidate
+    from my_api.Views.Document.alert_config import getDocumentNotValidate
     getDocumentNotValidate()
     print("Cron job started.")

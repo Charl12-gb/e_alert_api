@@ -7,14 +7,14 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.db import transaction
 from my_api.models import Documents, Users, Collaborations
-from my_api.serializers import DocumentsSerializer, DocumentsSerializerAdd, Exercice_configurations
-from my_api.permission_classes import PermissionVerify
-from my_api.my_views.helpers import generateNumero, generateUniqueUuid
+from my_api.Utils.serializers import DocumentsSerializer, DocumentsSerializerAdd, Exercice_configurations
+from my_api.Utils.permission_classes import PermissionVerify
+from my_api.Utils.helpers import generateNumero, generateUniqueUuid
 from django.shortcuts import get_object_or_404
 from django.conf import settings
 from datetime import datetime
 from django.http import HttpResponse
-from my_api.mail_config import MailConfig
+from my_api.Utils.mail_config import MailConfig
 
 def create_documents_for_all_partners(item, deadline, doc_status, periodicity, exercise_id, month, uniqueNumberGroupe):
     created_documents = []

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Users, Exercises, Documents, Exercice_configurations, Logs, Roles, Permissions, Permission_roles, User_permissions, Configurations, Collaborations, Contacts
+from my_api.models import Users, Exercises, Documents, Exercice_configurations, Logs, Roles, Permissions, Permission_roles, User_permissions, Configurations, Collaborations, Contacts
 
 
 class RolesSerializer(serializers.ModelSerializer):

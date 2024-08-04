@@ -1,6 +1,5 @@
-from django.db.models import Sum, Count, Q, Case, When, IntegerField, F
+from django.db.models import Count, Q, F
 from datetime import datetime
-from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import status
 from django.db.models.functions import ExtractMonth
 import calendar
@@ -8,10 +7,9 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
-from ..models import Exercises, Documents, Users, Collaborations, Roles, Exercice_configurations, Contacts
-from ..serializers import ExercisesSerializer, DocumentsSerializer, UsersSerializer, CollaborationsSerializer
-from ..permission_classes import PermissionVerify
-import os
+from my_api.models import Exercises, Documents, Users, Collaborations, Exercice_configurations, Contacts
+from my_api.Utils.serializers import DocumentsSerializer, UsersSerializer
+from my_api.Utils.permission_classes import PermissionVerify
 
 # Exemple de vue pour la répartition des exercices par statut
 @api_view(['GET'])

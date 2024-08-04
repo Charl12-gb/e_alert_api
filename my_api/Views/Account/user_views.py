@@ -6,14 +6,14 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.hashers import check_password
-from ..serializers import UsersSerializer, RolesSerializer, UsersSerializer, CollaborationsSerializer, UsersSerializerAdd
-from ..models import Users, Roles, Permissions, Permission_roles, User_permissions, Collaborations
+from my_api.Utils.serializers import UsersSerializer, RolesSerializer, UsersSerializer, UsersSerializerAdd
+from my_api.models import Users, Roles, Permissions, Permission_roles, User_permissions, Collaborations
 from rest_framework.permissions import AllowAny
-from ..permission_classes import PermissionVerify
+from my_api.Utils.permission_classes import PermissionVerify
 from django.core.files.storage import FileSystemStorage
 from django.db.models import Count
 from django.db import transaction
-from ..mail_config import MailConfig
+from my_api.Utils.mail_config import MailConfig
 from django.shortcuts import get_object_or_404
 import string
 import random

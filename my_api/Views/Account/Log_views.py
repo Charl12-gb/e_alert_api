@@ -3,9 +3,10 @@ from rest_framework.permissions import IsAuthenticated
 from django.db import transaction
 from rest_framework import status
 from rest_framework.response import Response
-from ..serializers import LogsSerializer
+from my_api.Utils.serializers import LogsSerializer
 from rest_framework_simplejwt.authentication import JWTAuthentication
-from ..models import Logs
+from my_api.models import Logs
+from my_api.Utils.permission_classes import PermissionVerify
 
 class Log_view:
     @authentication_classes([JWTAuthentication])

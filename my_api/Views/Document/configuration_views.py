@@ -3,10 +3,10 @@ from rest_framework.decorators import api_view, authentication_classes, permissi
 from django.db import transaction
 from rest_framework import status
 from rest_framework.response import Response
-from ..models import Configurations
-from ..serializers import ConfigurationsSerializer
+from my_api.models import Configurations
+from my_api.Utils.serializers import ConfigurationsSerializer
 from rest_framework_simplejwt.authentication import JWTAuthentication
-from ..permission_classes import PermissionVerify
+from my_api.Utils.permission_classes import PermissionVerify
 from django.core.files.storage import FileSystemStorage
 
 class Configuration_view:

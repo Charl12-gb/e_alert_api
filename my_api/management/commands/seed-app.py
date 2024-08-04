@@ -1,7 +1,7 @@
 from django.db import transaction
 from django.core.management.base import BaseCommand
 from my_api.models import Permissions, Roles, Configurations, Permission_roles, User_permissions, Users
-from my_api.serializers import PermissionsSerializer
+from my_api.Utils.serializers import PermissionsSerializer
 
 class Seeder:
     @classmethod

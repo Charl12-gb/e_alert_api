@@ -2,12 +2,11 @@ from rest_framework.decorators import api_view, authentication_classes, permissi
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework import status, serializers
+from rest_framework import status
 from django.db import transaction
-from django.core.exceptions import ObjectDoesNotExist
-from ..models import Contacts, Users
-from ..serializers import ContactsSerializer, UsersSerializer, ContactsSerializerAdd
-from ..permission_classes import PermissionVerify
+from my_api.models import Contacts
+from my_api.Utils.serializers import ContactsSerializer, ContactsSerializerAdd
+from my_api.Utils.permission_classes import PermissionVerify
 
 class Contact_view:
     @api_view(['POST'])
