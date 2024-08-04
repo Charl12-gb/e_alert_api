@@ -1,16 +1,25 @@
 import os
 import django
-from django.conf import settings
+from apscheduler.schedulers.blocking import BlockingScheduler
 
 # Configure Django settings
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "e_alert.settings")
 django.setup()
 
-# Maintenant, vous pouvez importer vos modèles Django
-from my_api.models import Exercice_configurations, Documents, Contacts
+# Import your Django models here
+from my_api.Views.Document.alert_config import getDocumentNotValidate
 
 # Votre fonction de démarrage du cron
 def start_cron():
-    from my_api.Views.Document.alert_config import getDocumentNotValidate
     getDocumentNotValidate()
     print("Cron job started.")
+
+# Configurer le scheduler
+scheduler = BlockingScheduler()
+scheduler.add_job(start_cron, 'interval', days=1)
+
+try:
+    print("Starting scheduler...")
+    scheduler.start()
+except (KeyboardInterrupt, SystemExit):
+    pass
