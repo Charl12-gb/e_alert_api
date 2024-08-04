@@ -49,7 +49,9 @@ class User_view:
         if not PermissionVerify.has_permission(request, 'users_create'):
             return Response({'message': 'Permission denied'}, status=status.HTTP_403_FORBIDDEN)
         
-        data = request.data
+        # Créez une copie mutable des données de la requête
+        data = request.data.copy()
+        
         new_password = generate_password()
         hashed_password = make_password(new_password)
         data['username'] = data.get('email')
@@ -58,7 +60,7 @@ class User_view:
         if not serializer.is_valid():
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-        user = serializer.save(password=hashed_password, username=request.data.get('email'), is_active=True)
+        user = serializer.save(password=hashed_password, username=data.get('email'), is_active=True)
 
         role = user.role
         role_permissions = Permission_roles.objects.filter(role=role)
@@ -75,7 +77,6 @@ class User_view:
         MailConfig.sendResetPasswordEmail(user.email, new_password, user)
 
         return Response({'message': "Success", 'user': userSerializer.data}, status=status.HTTP_201_CREATED)
-
 
     @api_view(['GET'])
     @authentication_classes([JWTAuthentication])

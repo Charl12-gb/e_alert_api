@@ -2,8 +2,6 @@ from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from django.conf import settings
-from datetime import datetime
-from django.shortcuts import get_object_or_404
 
 class MailConfig:
     def sendResetPasswordEmail(email, password, user):
@@ -16,7 +14,10 @@ class MailConfig:
         html_message = render_to_string('email_template.html', context)
         plain_message = strip_tags(html_message)
         from_email = settings.EMAIL_HOST_USER
-        send_mail(subject, plain_message, from_email, recipient_list, html_message=html_message)
+        try:
+            send_mail(subject, plain_message, from_email, recipient_list, html_message=html_message)
+        except Exception as e:
+            print(f"Error sending email: {e}")
 
     def sendDocumentEmail(recipient_list, subject, message):
         context = {'subject':subject, 'message': message}
@@ -24,4 +25,7 @@ class MailConfig:
         plain_message = strip_tags(email_message)
 
         from_email = settings.EMAIL_HOST_USER
-        send_mail(subject, plain_message, from_email, recipient_list, html_message=email_message)
+        try:
+            send_mail(subject, plain_message, from_email, recipient_list, html_message=email_message)
+        except Exception as e:
+            print(f"Error sending email: {e}")

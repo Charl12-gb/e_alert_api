@@ -10,7 +10,6 @@ def generateNumero(prefix='EXER-E'):
 def generateUniqueUuid():
     while True:
         unique_uuid = uuid.uuid4()
-        print(unique_uuid)
         # Vérifier si l'UUID n'est pas déjà utilisé pour le même group_number
         if not Documents.objects.filter(group_number=unique_uuid).exists():
             return unique_uuid

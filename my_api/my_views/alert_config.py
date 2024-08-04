@@ -1,16 +1,15 @@
-from datetime import timedelta
 from django.utils import timezone
 from django.db.models import Q
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from django.conf import settings
-from my_api.models import Exercice_configurations, Documents, Contacts
+from my_api.models import Exercice_configurations, Documents, Contacts, Users
 
 def verifyConfigurations(document, config):
     days_difference = (document.deadline - timezone.now().date()).days
 
-    serialized_number_day_sends = data.get('number_day_send', '')
+    serialized_number_day_sends = config.get('number_day_send', '')
     number_day_sends = serialized_number_day_sends.split(',') if serialized_number_day_sends else []
     number_day_sends = [int(day) for day in number_day_sends]
 
@@ -29,7 +28,10 @@ def sendAlertNotifications(document, recipient_emails, config):
     plain_message = strip_tags(email_message)
 
     from_email = settings.EMAIL_HOST_USER
-    send_mail(subject, plain_message, from_email, recipient_emails, html_message=email_message)
+    try:
+        send_mail(subject, plain_message, from_email, recipient_emails, html_message=email_message)
+    except Exception as e:
+        print(f"Error sending email: {e}")
 
 def getDocumentNotValidate():
     not_validated_documents = Documents.objects.filter(~Q(status='Validated'))

@@ -4,19 +4,69 @@ from rest_framework.decorators import api_view, authentication_classes, permissi
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework import status, serializers
+from rest_framework import status
 from django.db import transaction
-from django.core.exceptions import ObjectDoesNotExist
-from ..models import Documents, Exercises, Users, Collaborations
-from ..serializers import DocumentsSerializer, ExercisesSerializer, DocumentsSerializerAdd, UsersSerializer, CollaborationsSerializer, Exercice_configurations
-from ..permission_classes import PermissionVerify
-from .helpers import generateNumero, generateUniqueUuid
+from my_api.models import Documents, Users, Collaborations
+from my_api.serializers import DocumentsSerializer, DocumentsSerializerAdd, Exercice_configurations
+from my_api.permission_classes import PermissionVerify
+from my_api.my_views.helpers import generateNumero, generateUniqueUuid
 from django.shortcuts import get_object_or_404
 from django.conf import settings
 from datetime import datetime
 from django.http import HttpResponse
-from django.core.mail import send_mail
-from ..mail_config import MailConfig
+from my_api.mail_config import MailConfig
+
+def create_documents_for_all_partners(item, deadline, doc_status, periodicity, exercise_id, month, uniqueNumberGroupe):
+    created_documents = []
+    partners = Users.objects.filter(type='Partner')
+    for partner in partners:
+        document = create_document(item, deadline, doc_status, periodicity, exercise_id, partner, month, uniqueNumberGroupe)
+        created_documents.append(document)
+        send_email_to_partner(partner, document)
+    return created_documents
+
+def create_documents_for_specific_partners(item, deadline, doc_status, periodicity, exercise_id, month, uniqueNumberGroupe, partner_ids):
+    created_documents = []
+    if not partner_ids:
+        document = create_document(item, deadline, doc_status, periodicity, exercise_id, None, month, uniqueNumberGroupe)
+        created_documents.append(document)
+        send_email_to_partner(None, document, partner_ids)
+    else:
+        partner_ids = list(set(partner_ids))  # Remove duplicates if any
+        for userId in partner_ids:
+            user = Users.objects.filter(id=userId, type='Partner').first()
+            if user:
+                document = create_document(item, deadline, doc_status, periodicity, exercise_id, user, month, uniqueNumberGroupe)
+                created_documents.append(document)
+                send_email_to_partner(user, document)
+    return created_documents
+
+
+def create_document(item, deadline, doc_status, periodicity, exercise_id, partner, month, uniqueNumberGroupe):
+    document = Documents(
+        name=item['name'],
+        deadline=deadline,
+        status=doc_status,
+        periodicity=periodicity,
+        exercise_id=exercise_id,
+        partner=partner,
+        month=month,
+        group_number=uniqueNumberGroupe,
+        numero=generateNumero('DOC-E'),  # Generate the document number directly
+    )
+    document.save()
+    return document
+
+def send_email_to_partner(partner, document, partner_ids=None):
+    try:
+        if partner:
+            send_partner_notification_email(partner, document)
+        else:
+            send_partner_notification_email(None, document, partner_ids)
+    except Exception as e:
+        # Log the exception or handle it as necessary
+        print(f"Failed to send email to partner: {e}")
+
 
 def send_partner_notification_email(partner, document, partner_ids=None):
 
@@ -120,66 +170,9 @@ class Document_view:
                 partner_ids = sub_doc.get('partner', [])
 
                 if all_emails:
-                    # If 'all' is true, get all users with type="Partner" and create a document for each one.
-                    partners = Users.objects.filter(type='Partner')
-                    for partner in partners:
-                        document = Documents(
-                            name=item['name'],
-                            deadline=deadline,
-                            status=doc_status,
-                            periodicity=periodicity,
-                            exercise_id=exercise_id,
-                            partner=partner,
-                            month=month,
-                            group_number=uniqueNumberGroupe,
-                            numero=generateNumero('DOC-E'),  # Generate the document number directly
-                        )
-                        document.save()
-                        created_documents.append(document)
-                        
-                        # Envoyer un e-mail au partenaire
-                        send_partner_notification_email(partner, document)
-
+                    created_documents.extend(create_documents_for_all_partners(item, deadline, doc_status, periodicity, exercise_id, month, uniqueNumberGroupe))
                 else:
-                    # If 'all' is false, create a document for each specified email in 'partner' list.
-                    if partner_ids == []:
-                        document = Documents(
-                            name=item['name'],
-                            deadline=deadline,
-                            status=doc_status,
-                            periodicity=periodicity,
-                            exercise_id=exercise_id,
-                            month=month,
-                            group_number=uniqueNumberGroupe,
-                            numero=generateNumero('DOC-E'),  # Generate the document number directly
-                        )
-                        document.save()
-                        created_documents.append(document)
-                        
-                        # Envoyer un e-mail au partenaire
-                        send_partner_notification_email(None, document, partner_ids)
-                    
-                    else: 
-                        partner_ids = list(set(partner_ids))  # Remove duplicates if any
-                        for userId in partner_ids:
-                            user = Users.objects.filter(id=userId, type='Partner').first()
-                            if user:
-                                document = Documents(
-                                    name=item['name'],
-                                    deadline=deadline,
-                                    status=doc_status,
-                                    periodicity=periodicity,
-                                    exercise_id=exercise_id,
-                                    partner=user,
-                                    month=month,
-                                    group_number=uniqueNumberGroupe,
-                                    numero=generateNumero('DOC-E'),  # Generate the document number directly
-                                )
-                                document.save()
-                                created_documents.append(document)
-                                
-                                # Envoyer un e-mail au partenaire
-                                send_partner_notification_email(user, document)
+                    created_documents.extend(create_documents_for_specific_partners(item, deadline, doc_status, periodicity, exercise_id, month, uniqueNumberGroupe, partner_ids))
                                 
         # Return the serialized data of the created documents
         serializer = DocumentsSerializer(created_documents, many=True)
