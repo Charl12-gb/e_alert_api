@@ -23,7 +23,6 @@ numpy==1.24.2
 packaging==23.1
 Pillow==9.5.0
 pluggy==1.2.0
-psycopg2==2.9.9
 pyasn1==0.5.1
 pyasn1-modules==0.3.0
 pycodestyle==2.10.0
