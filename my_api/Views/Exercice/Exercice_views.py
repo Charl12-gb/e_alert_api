@@ -133,7 +133,7 @@ def exercice(request, exercice_id):
         doc_filter &= Q(status=status_param)
 
     if month_param:
-        doc_filter &= Q(date_created__month=month_param)
+        doc_filter &= Q(month=month_param)
 
     if request.user.type == 'User':
         if request.user.role.name == 'Admin' or PermissionVerify.has_permission(request, 'can_see_all_document_in_exercice'):
