@@ -2,7 +2,7 @@ from my_api import views
 from django.urls import path
 from my_api.views import LoginView, LogoutView
 from rest_framework_simplejwt.views import TokenRefreshView
-from my_api.Views.Exercice.Exercice_views import Exercice_view
+from my_api.Views.Exercice.Exercice_views import *
 from my_api.Views.Document.Document_views import Document_view
 from my_api.Views.Exercice.Exercice_configuration_views import Exercice_configuration_view
 from my_api.Views.Account.Log_views import Log_view
@@ -55,16 +55,16 @@ urlpatterns = [
     path('get-partner-documents-by-service/<str:partner_id>/<str:service_id>/', Collaboration_view.getPartnerDocumentsByService, name='get-partner-documents-by-service'),
 
     # Exercice
-    path('exercices/', Exercice_view.exercices),
-    path('exercices/add', Exercice_view.addExercice),
-    path('exercices/update/<int:exercice_id>', Exercice_view.updateExercice),
-    path('exercices/exercice/<int:exercice_id>', Exercice_view.exercice),
-    path('exercices/delete/<int:exercice_id>', Exercice_view.deleteExercice),
-    path('exercices/open-close/<int:exercice_id>', Exercice_view.openOrCloseExercice),
-    path('exercices/set-date/<int:exercice_id>', Exercice_view.setExerciceDate),
-    path('users-detail-data/<int:user_id>', Exercice_view.getDetailData),
-    path('partners/documents/<str:manager_id>/<str:period>/', Exercice_view.listPartnerAndExerciceWhereDocumentNotSent),
-    path('renew-exercise-for-year', Exercice_view.renewForYear),
+    path('exercices/', exercices),
+    path('exercices/add', addExercice),
+    path('exercices/update/<int:exercice_id>', updateExercice),
+    path('exercices/exercice/<int:exercice_id>', exercice),
+    path('exercices/delete/<int:exercice_id>', deleteExercice),
+    path('exercices/open-close/<int:exercice_id>', openOrCloseExercice),
+    path('exercices/set-date/<int:exercice_id>', setExerciceDate),
+    path('users-detail-data/<int:user_id>', get_detail_data),
+    path('partners/documents/<str:manager_id>/<str:period>/', listPartnerAndExerciceWhereDocumentNotSent),
+    path('renew-exercise-for-year', renewForYear),
 
     # Configurations
     path('configurations/update/<int:config_id>/<str:value>', Configuration_view.updateConfigurations),
