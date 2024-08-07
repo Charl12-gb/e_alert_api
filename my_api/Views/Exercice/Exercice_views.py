@@ -280,10 +280,13 @@ def get_detail_data(request, user_id):
             documents_list = Documents.objects.filter(doc_filter)
             exercises_set = Exercises.objects.filter(exercice_filter).distinct()
 
-            manager_detail = Collaborations.objects.get(partner=user.id)
-            manage_serializer = CollaborationsSerializer(manager_detail)
-            if manage_serializer is not None:
-                manage = manage_serializer.data
+            try:
+                manager_detail = Collaborations.objects.get(partner=user.id)
+                manage_serializer = CollaborationsSerializer(manager_detail)
+                if manage_serializer is not None:
+                    manage = manage_serializer.data
+            except Collaborations.DoesNotExist:
+                manage = {}
 
             num_documents_status = Documents.objects.filter(
                 Q(partner=user)
