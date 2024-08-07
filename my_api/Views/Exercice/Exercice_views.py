@@ -174,6 +174,8 @@ def exercice(request, exercice_id):
         'users_previous': paginator_users.get_previous_link(),
         'documents_current_page': paginator_docs.page.number,
         'users_current_page': paginator_users.page.number,
+        'documents_total_pages': paginator_docs.page.paginator.num_pages,
+        'users_total_pages': paginator_users.page.paginator.num_pages,
     }
 
     return Response(response_data, status=status.HTTP_200_OK)
