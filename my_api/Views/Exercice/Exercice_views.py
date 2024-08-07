@@ -10,7 +10,7 @@ from django.db import transaction
 from my_api.Utils.helpers import generateNumero
 from django.shortcuts import get_object_or_404
 from django.db.models import Count, Q
-from rest_framework.pagination import PageNumberPagination
+from django.core.paginator import Paginator, EmptyPage
 from datetime import date
 import datetime
 
@@ -98,11 +98,7 @@ def updateExercice(request, exercice_id):
         return Response({'message': 'Exercise updated successfully', 'exercice': serializer.data}, status=status.HTTP_200_OK)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class StandardResultsSetPagination(PageNumberPagination):
-    page_size = 10
-    page_size_query_param = 'page_size'
-    max_page_size = 100
-    
+
 @api_view(['GET'])
 @authentication_classes([JWTAuthentication])
 @permission_classes([IsAuthenticated])
@@ -114,13 +110,15 @@ def exercice(request, exercice_id):
     status_param = request.query_params.get('status', 'all')
     month_param = request.query_params.get('month')
     year_param = request.query_params.get('year')
-    
+    page_doc = request.query_params.get('page_doc', 1)
+    page_exer = request.query_params.get('page_exer', 1)
+    page_size = request.query_params.get('page_size', 10)
+
     if year_param:
         exercice = get_object_or_404(Exercises, id=exercice_id, year=year_param)
     else:
         exercice = get_object_or_404(Exercises, id=exercice_id)
     exercice_serializer = ExercisesSerializer(exercice)
-    
 
     doc_filter = Q(exercise=exercice)
     if search_param:
@@ -135,7 +133,7 @@ def exercice(request, exercice_id):
         doc_filter &= Q(status=status_param)
 
     if month_param:
-        doc_filter &= Q(month=month_param)
+        doc_filter &= Q(date_created__month=month_param)
 
     if request.user.type == 'User':
         if request.user.role.name == 'Admin' or PermissionVerify.has_permission(request, 'can_see_all_document_in_exercice'):
@@ -154,28 +152,36 @@ def exercice(request, exercice_id):
         Q(collaborations_partnered__partner_id__in=partner_ids)
     ).distinct()
 
-    paginator_docs = StandardResultsSetPagination()
-    paginated_documents = paginator_docs.paginate_queryset(documents, request)
+    # Pagination pour les documents
+    documents_paginator = Paginator(documents, page_size)
+    try:
+        paginated_documents = documents_paginator.page(page_doc)
+    except EmptyPage:
+        paginated_documents = documents_paginator.page(documents_paginator.num_pages)
     documents_serializer = DocumentsSerializer(paginated_documents, many=True)
 
-    paginator_users = StandardResultsSetPagination()
-    paginated_users = paginator_users.paginate_queryset(users, request)
+    # Pagination pour les utilisateurs
+    users_paginator = Paginator(users, page_size)
+    try:
+        paginated_users = users_paginator.page(page_exer)
+    except EmptyPage:
+        paginated_users = users_paginator.page(users_paginator.num_pages)
     users_serializer = UsersSerializer(paginated_users, many=True)
 
     response_data = {
         'exercice': exercice_serializer.data,
         'documents': documents_serializer.data,
         'users': users_serializer.data,
-        'documents_count': paginator_docs.page.paginator.count,
-        'users_count': paginator_users.page.paginator.count,
-        'documents_next': paginator_docs.get_next_link(),
-        'documents_previous': paginator_docs.get_previous_link(),
-        'users_next': paginator_users.get_next_link(),
-        'users_previous': paginator_users.get_previous_link(),
-        'documents_current_page': paginator_docs.page.number,
-        'users_current_page': paginator_users.page.number,
-        'documents_total_pages': paginator_docs.page.paginator.num_pages,
-        'users_total_pages': paginator_users.page.paginator.num_pages,
+        'documents_count': documents_paginator.count,
+        'users_count': users_paginator.count,
+        'documents_next': paginated_documents.has_next(),
+        'documents_previous': paginated_documents.has_previous(),
+        'users_next': paginated_users.has_next(),
+        'users_previous': paginated_users.has_previous(),
+        'documents_current_page': paginated_documents.number,
+        'users_current_page': paginated_users.number,
+        'documents_total_pages': documents_paginator.num_pages,
+        'users_total_pages': users_paginator.num_pages,
     }
 
     return Response(response_data, status=status.HTTP_200_OK)
