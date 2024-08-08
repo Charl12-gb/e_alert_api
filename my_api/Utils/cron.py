@@ -9,11 +9,13 @@ django.setup()
 
 # Import your Django models here
 from my_api.Views.Document.alert_config import getDocumentNotValidate
+from my_api.Utils.test_email import send_simple_email
 
 # Votre fonction de démarrage du cron
 def start_cron():
     print("Cron job started.")
     getDocumentNotValidate()
+    send_simple_email()        
 
 # Fonction pour démarrer le scheduler dans un thread
 def start_scheduler():
