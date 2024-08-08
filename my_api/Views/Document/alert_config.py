@@ -9,7 +9,7 @@ from my_api.models import Exercice_configurations, Documents, Contacts, Users
 def verifyConfigurations(document, config):
     days_difference = (document.deadline - timezone.now().date()).days
 
-    serialized_number_day_sends = config.get('number_day_send', '')
+    serialized_number_day_sends = getattr(config, 'number_day_send', '')
     number_day_sends = serialized_number_day_sends.split(',') if serialized_number_day_sends else []
     number_day_sends = [int(day) for day in number_day_sends]
 
@@ -18,7 +18,6 @@ def verifyConfigurations(document, config):
     elif config.moment == 'After' and -days_difference in number_day_sends:
         return document
     return None
-
 
 def sendAlertNotifications(document, recipient_emails, config):
     subject = 'ALERTE DOCUMENT : ' + document.name
