@@ -162,11 +162,13 @@ class User_view:
             
             updated_user = serializer.save()
 
+            """
             # Clear existing permissions and add permissions based on updated role
             updated_user.user_permissions.clear()
             role = updated_user.role
             permissions = Permission_roles.objects.filter(role=role).values_list('permission', flat=True)
             updated_user.user_permissions.add(*permissions)
+            """
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
