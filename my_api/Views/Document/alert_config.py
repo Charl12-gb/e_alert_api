@@ -51,5 +51,6 @@ def getDocumentNotValidate():
                     pass 
 
             validated_document = verifyConfigurations(document, config)
+            print(validated_document)
             if validated_document:
                 sendAlertNotifications(validated_document, recipient_emails, config)
