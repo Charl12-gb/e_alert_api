@@ -8,8 +8,12 @@ from my_api.models import Exercice_configurations, Documents, Contacts, Users
 
 def verifyConfigurations(document, config):
     days_difference = (document.deadline - timezone.now().date()).days
+    print(days_difference)
 
-    serialized_number_day_sends = getattr(config, 'number_day_send', '')
+    serialized_number_day_sends = config.number_day_send
+    print(serialized_number_day_sends)
+    if serialized_number_day_sends == None or serialized_number_day_sends == '':
+        serialized_number_day_sends = ''
     number_day_sends = serialized_number_day_sends.split(',') if serialized_number_day_sends else []
     number_day_sends = [int(day) for day in number_day_sends]
 
@@ -51,6 +55,5 @@ def getDocumentNotValidate():
                     pass 
 
             validated_document = verifyConfigurations(document, config)
-            print(validated_document)
             if validated_document:
                 sendAlertNotifications(validated_document, recipient_emails, config)
