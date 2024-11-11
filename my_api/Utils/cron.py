@@ -13,7 +13,7 @@ from my_api.Utils.test_email import send_simple_email
 # Votre fonction de démarrage du cron
 def start_cron():
     print("Cron job started.")
-    getDocumentNotValidate()
+    # getDocumentNotValidate()
     send_simple_email()        
 
 # Démarrer le serveur Django
