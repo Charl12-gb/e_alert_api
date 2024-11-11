@@ -38,6 +38,11 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'my_api',
     'corsheaders',
+    'django_crontab',
+]
+
+CRONJOBS = [
+    ('*/5 * * * *', 'my_api.cron.my_cron_job'),  # Toutes les 5 minutes
 ]
 
 logger = logging.getLogger('django_auth_ldap')
