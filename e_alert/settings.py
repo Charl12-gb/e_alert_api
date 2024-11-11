@@ -42,7 +42,7 @@ INSTALLED_APPS = [
 ]
 
 CRONJOBS = [
-    ('*/5 * * * *', 'my_api.cron.my_cron_job'),  # Toutes les 5 minutes
+    ('*/5 * * * *', 'my_api.Utils.cron.start_cron'),  # Toutes les 5 minutes
 ]
 
 logger = logging.getLogger('django_auth_ldap')
