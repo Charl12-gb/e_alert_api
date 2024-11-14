@@ -15,7 +15,8 @@ def addDefaultPermissionToRole(role_name, role):
         'documents_update_status',
         'documents_update_file',
         'documents_view_partner',
-        'download_document'
+        'download_document',
+        
     ]
 
     collaborator_default_permissions = [
@@ -36,6 +37,7 @@ def addDefaultPermissionToRole(role_name, role):
         'contacts_view',
         'contacts_create',
         'contacts_update',
+        'contacts_delete',
         'documents_update_status',
         'documents_update_file',
         'documents_view_partner',

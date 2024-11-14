@@ -105,6 +105,7 @@ urlpatterns = [
     path('set-contact/<int:contact_id>', Contact_view.activeOrInactiveContact),
     path('update-contact/<int:contact_id>', Contact_view.updateContact),
     path('add-update-contact', Contact_view.addOrUpdateContact),
+    path('delete/<int:contact_id>/contact', Contact_view.delete_contact),
 
     # Statistique
     path('exercise-status-distribution', Statistique.exerciseStatusDistribution),

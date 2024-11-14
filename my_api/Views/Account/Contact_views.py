@@ -114,3 +114,16 @@ class Contact_view:
             return Response(serializer.data, status=201)
         return Response(serializer.errors, status=400)
     
+    @api_view(['DELETE'])
+    @authentication_classes([JWTAuthentication])
+    @permission_classes([IsAuthenticated]) 
+    def delete_contact(request, contact_id):
+        if not PermissionVerify.has_permission(request, 'contacts_delete'):
+            return Response({'message': 'Permission denied'}, status=status.HTTP_403_FORBIDDEN)
+        
+        try:
+            contact = Contacts.objects.get(id=contact_id)
+            contact.delete()
+            return Response({'message': 'Contact deleted'}, status=status.HTTP_204_NO_CONTENT)
+        except Contacts.DoesNotExist:
+            return Response({'message': 'Contact not found'}, status=status.HTTP_404_NOT_FOUND)

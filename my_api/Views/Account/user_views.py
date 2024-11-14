@@ -7,7 +7,7 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.hashers import check_password
 from my_api.Utils.serializers import UsersSerializer, RolesSerializer, UsersSerializer, UsersSerializerAdd
-from my_api.models import Users, Roles, Permissions, Permission_roles, User_permissions, Collaborations
+from my_api.models import Users, Roles, Permissions, Permission_roles, User_permissions, Collaborations, Documents, Contacts
 from rest_framework.permissions import AllowAny
 from my_api.Utils.permission_classes import PermissionVerify
 from django.core.files.storage import FileSystemStorage
@@ -177,15 +177,28 @@ class User_view:
     @permission_classes([IsAuthenticated])
     def delete(request, user_id):
         if not PermissionVerify.has_permission(request, 'users_delete'):
-            return Response({'message': 'Permission denied'}, status=status.HTTP_403_FORBIDDEN)
-        
+            return Response({'message': 'Permission refusée'}, status=status.HTTP_403_FORBIDDEN)
+
         try:
             user = Users.objects.get(id=user_id)
         except Users.DoesNotExist:
-            return Response({'message': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
-        
+            return Response({'message': 'Utilisateur non trouvé'}, status=status.HTTP_404_NOT_FOUND)
+
+        # Vérifications de relations avec Documents
+        if Documents.objects.filter(partner=user).exists():
+            return Response({'message': 'Impossible de supprimer l\'utilisateur car il est lié à des documents'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Vérifications de relations avec Contacts
+        if Contacts.objects.filter(partner=user).exists() or Contacts.objects.filter(created_by=user).exists():
+            return Response({'message': 'Impossible de supprimer l\'utilisateur car il est lié à des contacts'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Vérifications de relations avec Collaborations
+        if Collaborations.objects.filter(partner=user).exists():
+            return Response({'message': 'Impossible de supprimer l\'utilisateur car il est lié à des collaborations'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Si aucune relation n'existe, supprimez l'utilisateur
         user.delete()
-        return Response({'message': 'User deleted'}, status=status.HTTP_204_NO_CONTENT)
+        return Response({'message': 'Utilisateur supprimé avec succès'}, status=status.HTTP_200_OK)
 
     @api_view(['PUT'])
     @authentication_classes([JWTAuthentication])
