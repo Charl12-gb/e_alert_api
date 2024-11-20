@@ -7,13 +7,14 @@ django.setup()
 
 # Import your Django models here
 from my_api.models import Exercice_configurations, Documents, Contacts
-from my_api.Views.Document.alert_config import getDocumentNotValidate
+from my_api.Views.Document.alert_config import get_documents_not_validated, process_alerts
 from my_api.Utils.test_email import send_simple_email
 
 # Votre fonction de démarrage du cron
 def start_cron():
     print("Cron job started.")
-    getDocumentNotValidate()
+    get_documents_not_validated()
+    process_alerts()
     send_simple_email()        
 
 # Démarrer le serveur Django
