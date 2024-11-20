@@ -15,10 +15,10 @@ def verify_configurations(document, config):
     ]
 
     if config.moment == 'Before' and days_difference in number_day_sends:
-        return True
+        return True, days_difference, number_day_sends
     elif config.moment == 'After' and -days_difference in number_day_sends:
-        return True
-    return False
+        return True, days_difference, number_day_sends
+    return False, days_difference, number_day_sends
 
 def send_alert_notifications(document, recipient_emails, config):
     subject = f"ALERTE DOCUMENT : {document.name}"
@@ -65,7 +65,8 @@ def get_documents_not_validated():
                     print(f"Partner with ID {document.partner_id} does not exist.")
 
             # Send email if configuration is valid
-            if verify_configurations(document, config):
+            alert_status, days_difference, number_day_sends = verify_configurations(document, config)
+            if alert_status:
                 send_alert_notifications(document, recipient_emails, config)
 
 def send_email_with_alert(document, alert_level, config):
@@ -74,7 +75,7 @@ def send_email_with_alert(document, alert_level, config):
     """
     recipient_emails = ['gboyoucharles.tech@gmail.com']
 
-    subject = f"[{alert_level.upper()}] Alerte : {document.name}"
+    subject = f"[{alert_level}] Alerte : {document.name}"
 
     context = {
         'document': document,
@@ -100,11 +101,11 @@ def process_alerts():
     """
     Parcourt les documents et configurations pour envoyer des alertes.
     """
-    documents = Documents.objects.filter(is_active=True)
+    documents = Documents.objects.all()
 
     for document in documents:
         configs = Exercice_configurations.objects.filter(document=document)
         for config in configs:
-            if verify_configurations(document, config):
-                alert_level = config.alert_level
-                send_email_with_alert(document, alert_level, config)
+            alert_status, days_difference, number_day_sends = verify_configurations(document, config)
+            if alert_status:
+                send_email_with_alert(document, days_difference, config)
