@@ -101,9 +101,9 @@ def process_alerts():
     Parcourt les documents et configurations pour envoyer des alertes.
     """
     documents = Documents.objects.filter(is_active=True)
-    configs = Exercice_configurations.objects.filter(is_active=True)
 
     for document in documents:
+        configs = Exercice_configurations.objects.filter(document=document)
         for config in configs:
             if verify_configurations(document, config):
                 alert_level = config.alert_level
