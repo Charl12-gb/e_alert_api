@@ -102,7 +102,7 @@ def process_alerts():
     """
     Parcourt les documents et configurations pour envoyer des alertes.
     """
-    documents = Documents.objects.all()
+    documents = Documents.objects.filter(~Q(status='Validated'))
 
     for document in documents:
         configs = Exercice_configurations.objects.filter(document=document)
