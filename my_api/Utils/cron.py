@@ -14,5 +14,5 @@ from my_api.Utils.test_email import send_simple_email
 def start_cron():
     print("Cron job started.")
     send_simple_email()        
-    # get_documents_not_validated()
     process_alerts()
+    get_documents_not_validated()
