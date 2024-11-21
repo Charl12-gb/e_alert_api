@@ -83,6 +83,7 @@ def send_email_with_alert(document, alert_level, config):
         'message': config.content_mail,
         'alert_level': alert_level,
         'deadline': document.deadline,
+        'status': document.status
     }
 
     email_message = render_to_string('alert_me_template.html', context)
@@ -107,5 +108,5 @@ def process_alerts():
         configs = Exercice_configurations.objects.filter(document=document)
         for config in configs:
             alert_status, days_difference, number_day_sends = verify_configurations(document, config)
-            send_email_with_alert(document, days_difference, config)
-            # if alert_status:
+            if alert_status:
+                send_email_with_alert(document, days_difference, config)
