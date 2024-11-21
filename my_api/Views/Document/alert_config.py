@@ -107,5 +107,5 @@ def process_alerts():
         configs = Exercice_configurations.objects.filter(document=document)
         for config in configs:
             alert_status, days_difference, number_day_sends = verify_configurations(document, config)
-            if alert_status:
-                send_email_with_alert(document, days_difference, config)
+            send_email_with_alert(document, days_difference, config)
+            # if alert_status:
